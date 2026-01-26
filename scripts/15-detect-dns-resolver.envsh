@@ -1,0 +1,20 @@
+#!/bin/sh
+# This file is sourced by nginx's entrypoint BEFORE envsubst runs
+# It detects the appropriate DNS resolver for the environment
+
+# If DNS_RESOLVER is not set or is "auto", detect from /etc/resolv.conf
+if [ -z "$DNS_RESOLVER" ] || [ "$DNS_RESOLVER" = "auto" ]; then
+    # Try to get nameserver from resolv.conf
+    DETECTED_RESOLVER=$(grep -m1 "^nameserver" /etc/resolv.conf 2>/dev/null | awk '{print $2}')
+
+    if [ -n "$DETECTED_RESOLVER" ]; then
+        export DNS_RESOLVER="$DETECTED_RESOLVER"
+        echo "DNS_RESOLVER auto-detected: $DNS_RESOLVER"
+    else
+        # Fallback to Docker's internal DNS
+        export DNS_RESOLVER="127.0.0.11"
+        echo "DNS_RESOLVER fallback: $DNS_RESOLVER"
+    fi
+else
+    echo "DNS_RESOLVER configured: $DNS_RESOLVER"
+fi

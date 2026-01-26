@@ -33,14 +33,22 @@ RUN rm -f /etc/nginx/conf.d/default.conf
 # Copy built assets from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy entrypoint script (for logging and optional runtime injection)
+# Copy entrypoint scripts
+# 15-detect-dns-resolver.envsh: Sourced before envsubst to detect DNS resolver
+# 40-entrypoint-frontend.sh: Runs after nginx config is ready
+COPY scripts/15-detect-dns-resolver.envsh /docker-entrypoint.d/15-detect-dns-resolver.envsh
 COPY scripts/entrypoint-frontend.sh /docker-entrypoint.d/40-entrypoint-frontend.sh
-RUN chmod +x /docker-entrypoint.d/40-entrypoint-frontend.sh
+RUN chmod +x /docker-entrypoint.d/15-detect-dns-resolver.envsh /docker-entrypoint.d/40-entrypoint-frontend.sh
 
 # Environment variables with defaults
 # Railway overrides PORT automatically
 ENV PORT=3000
 ENV BACKEND_URL=backend:8000
+# DNS resolver for nginx upstream resolution
+# - "auto": Auto-detect from /etc/resolv.conf (recommended)
+# - Docker: 127.0.0.11 (Docker's internal DNS)
+# - Custom: Any valid DNS IP address
+ENV DNS_RESOLVER=auto
 
 EXPOSE ${PORT}
 
