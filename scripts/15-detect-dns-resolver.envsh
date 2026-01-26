@@ -4,8 +4,18 @@
 
 # If DNS_RESOLVER is not set or is "auto", detect from /etc/resolv.conf
 if [ -z "$DNS_RESOLVER" ] || [ "$DNS_RESOLVER" = "auto" ]; then
-    # Try to get nameserver from resolv.conf
-    DETECTED_RESOLVER=$(grep -m1 "^nameserver" /etc/resolv.conf 2>/dev/null | awk '{print $2}')
+    # Try to get nameserver from resolv.conf (prefer IPv4 over IPv6)
+    # First try to find an IPv4 address
+    DETECTED_RESOLVER=$(grep "^nameserver" /etc/resolv.conf 2>/dev/null | awk '{print $2}' | grep -E "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" | head -1)
+
+    # If no IPv4 found, use IPv6 (wrapped in brackets for nginx)
+    if [ -z "$DETECTED_RESOLVER" ]; then
+        IPV6_RESOLVER=$(grep -m1 "^nameserver" /etc/resolv.conf 2>/dev/null | awk '{print $2}')
+        if [ -n "$IPV6_RESOLVER" ]; then
+            # nginx requires IPv6 addresses in brackets
+            DETECTED_RESOLVER="[${IPV6_RESOLVER}]"
+        fi
+    fi
 
     if [ -n "$DETECTED_RESOLVER" ]; then
         export DNS_RESOLVER="$DETECTED_RESOLVER"
