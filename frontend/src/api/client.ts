@@ -1,6 +1,9 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Use ?? instead of || to allow empty string (for nginx proxy mode)
+// - Production (Railway/docker): VITE_API_URL="" → uses nginx proxy at /api/*
+// - Development (npm run dev): VITE_API_URL="http://localhost:8000" → direct calls
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
