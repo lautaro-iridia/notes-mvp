@@ -1,5 +1,53 @@
-node_modules
-dist
-.env*
+# Dependencies
+node_modules/
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+.vite/
+
+# Environment files
+.env
+.env.*
+!.env.example
 *.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Local resources
 /recursos_externos/*
+
+# Database
+*.db
+*.sqlite3

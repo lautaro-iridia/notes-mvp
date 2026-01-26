@@ -1,0 +1,18 @@
+[project]
+name = "iridia-notes-backend"
+version = "1.0.0"
+description = "Backend API for Iridia Notes application"
+authors = [{name = "Lautaro Vallejos"}]
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]

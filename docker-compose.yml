@@ -1,0 +1,62 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - iridia-network
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-iridia}:${POSTGRES_PASSWORD:-iridia_secret}@db:5432/${POSTGRES_DB:-iridia_notes}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+      - JWT_ALGORITHM=${JWT_ALGORITHM:-HS256}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000}
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - iridia-network
+    restart: unless-stopped
+
+  db:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-iridia}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-iridia_secret}
+      - POSTGRES_DB=${POSTGRES_DB:-iridia_notes}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-iridia} -d ${POSTGRES_DB:-iridia_notes}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iridia-network
+    restart: unless-stopped
+
+networks:
+  iridia-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
