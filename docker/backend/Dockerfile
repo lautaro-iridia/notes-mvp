@@ -24,10 +24,11 @@ FROM python:3.12-alpine AS production
 
 WORKDIR /app
 
-# Install runtime dependencies
+# Install runtime dependencies (postgresql-client for pg_isready in entrypoint)
 RUN apk add --no-cache \
     libpq \
-    libffi
+    libffi \
+    postgresql-client
 
 # Copy virtual environment from builder
 COPY --from=builder /opt/venv /opt/venv
@@ -44,7 +45,8 @@ RUN chmod +x /entrypoint.sh
 RUN adduser -D appuser && chown -R appuser:appuser /app
 USER appuser
 
-EXPOSE 8000
+# Railway provides PORT env variable, default to 8000
+ENV PORT=8000
+EXPOSE $PORT
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

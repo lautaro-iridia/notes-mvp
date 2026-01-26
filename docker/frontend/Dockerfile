@@ -22,7 +22,10 @@ FROM nginx:1.27-alpine
 
 # Copy nginx configuration
 COPY docker/frontend/nginx.conf /etc/nginx/nginx.conf
+# Default config for docker-compose local (fallback)
 COPY docker/frontend/default.conf /etc/nginx/conf.d/default.conf
+# Template for Railway (processed by entrypoint if PORT/BACKEND_URL are set)
+COPY docker/frontend/default.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy built assets from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
@@ -31,6 +34,10 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 COPY scripts/entrypoint-frontend.sh /docker-entrypoint.d/40-entrypoint-frontend.sh
 RUN chmod +x /docker-entrypoint.d/40-entrypoint-frontend.sh
 
-EXPOSE 5173
+# Environment variables for Railway (with defaults for local)
+ENV PORT=3000
+ENV BACKEND_URL=backend:8000
+
+EXPOSE ${PORT}
 
 CMD ["nginx", "-g", "daemon off;"]
