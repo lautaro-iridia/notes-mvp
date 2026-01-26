@@ -9,8 +9,15 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects import postgresql
+
+# pgvector is optional - only used for semantic search feature
+try:
+    from pgvector.sqlalchemy import Vector
+    HAS_PGVECTOR = True
+except ImportError:
+    HAS_PGVECTOR = False
+    Vector = None
 
 revision: str = '001'
 down_revision: Union[str, None] = None
@@ -18,9 +25,23 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
+def _check_extension_available(conn, extension_name: str) -> bool:
+    """Check if a PostgreSQL extension is available."""
+    result = conn.execute(sa.text(
+        "SELECT 1 FROM pg_available_extensions WHERE name = :name"
+    ), {"name": extension_name})
+    return result.fetchone() is not None
+
+
 def upgrade() -> None:
-    # Create extensions
-    op.execute('CREATE EXTENSION IF NOT EXISTS vector')
+    # Get connection to check available extensions
+    conn = op.get_bind()
+
+    # Create vector extension only if available (Railway doesn't have it)
+    if _check_extension_available(conn, 'vector'):
+        op.execute('CREATE EXTENSION IF NOT EXISTS vector')
+
+    # uuid-ossp is standard in PostgreSQL
     op.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
 
     # Create users table
@@ -51,8 +72,8 @@ def upgrade() -> None:
     op.create_index('ix_categories_user_id', 'categories', ['user_id'])
 
     # Create notes table
-    op.create_table(
-        'notes',
+    # Build columns list - embedding is optional (requires pgvector)
+    notes_columns = [
         sa.Column('id', postgresql.UUID(as_uuid=True), server_default=sa.text('uuid_generate_v4()'), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column('title', sa.String(500), nullable=False),
@@ -62,11 +83,20 @@ def upgrade() -> None:
         sa.Column('color', sa.String(50), nullable=True),
         sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
         sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-        sa.Column('embedding', Vector(1536), nullable=True),
+    ]
+
+    # Add embedding column only if pgvector is available
+    # Using 1024 dimensions (compatible with text-embedding-3-small)
+    if HAS_PGVECTOR and _check_extension_available(conn, 'vector'):
+        notes_columns.append(sa.Column('embedding', Vector(1024), nullable=True))
+
+    notes_columns.extend([
         sa.CheckConstraint("type IN ('note', 'thought', 'idea')", name='valid_note_type'),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('id'),
-    )
+    ])
+
+    op.create_table('notes', *notes_columns)
     op.create_index('ix_notes_user_id', 'notes', ['user_id'])
 
     # Create note_categories table
@@ -101,4 +131,7 @@ def downgrade() -> None:
     op.drop_index('ix_users_email', table_name='users')
     op.drop_table('users')
     op.execute('DROP EXTENSION IF EXISTS "uuid-ossp"')
-    op.execute('DROP EXTENSION IF EXISTS vector')
+    # Only drop vector extension if it exists
+    conn = op.get_bind()
+    if _check_extension_available(conn, 'vector'):
+        op.execute('DROP EXTENSION IF EXISTS vector')

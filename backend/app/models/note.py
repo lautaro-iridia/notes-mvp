@@ -2,16 +2,26 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING
 
-from pgvector.sqlalchemy import Vector
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
+# pgvector is optional - only used for semantic search feature
+try:
+    from pgvector.sqlalchemy import Vector
+    HAS_PGVECTOR = True
+except ImportError:
+    HAS_PGVECTOR = False
+    Vector = None
+
 if TYPE_CHECKING:
     from app.models.category import Category
     from app.models.user import User
+
+# Embedding dimensions (1024 for models like text-embedding-3-small)
+EMBEDDING_DIMENSIONS = 1024
 
 
 class Note(Base):
@@ -46,7 +56,12 @@ class Note(Base):
         server_default=func.now(),
         onupdate=func.now(),
     )
-    embedding = mapped_column(Vector(1536), nullable=True)
+
+    # Embedding column - only defined if pgvector is available
+    if HAS_PGVECTOR and Vector is not None:
+        embedding = mapped_column(Vector(EMBEDDING_DIMENSIONS), nullable=True)
+    else:
+        embedding = None
 
     __table_args__ = (
         CheckConstraint("type IN ('note', 'thought', 'idea')", name="valid_note_type"),
