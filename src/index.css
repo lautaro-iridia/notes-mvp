@@ -1,0 +1,346 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Dark mode (default) */
+  html.dark body {
+    font-family: 'Merriweather', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    background-color: #0D0E0E;
+    color: #F0EEE9;
+  }
+
+  /* Light mode */
+  html.light body {
+    font-family: 'Merriweather', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    background-color: #F0EEE9;
+    color: #0D0E0E;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Zain', sans-serif;
+  }
+
+  /* Dark mode scrollbar */
+  .dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    background: rgba(75, 0, 130, 0.2);
+    border-radius: 4px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(178, 165, 255, 0.4);
+    border-radius: 4px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(178, 165, 255, 0.6);
+  }
+
+  /* Light mode scrollbar */
+  .light ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .light ::-webkit-scrollbar-track {
+    background: rgba(75, 0, 130, 0.1);
+    border-radius: 4px;
+  }
+
+  .light ::-webkit-scrollbar-thumb {
+    background: rgba(75, 0, 130, 0.3);
+    border-radius: 4px;
+  }
+
+  .light ::-webkit-scrollbar-thumb:hover {
+    background: rgba(75, 0, 130, 0.5);
+  }
+}
+
+@layer components {
+  /* ============================================
+     DARK MODE COMPONENTS
+     ============================================ */
+  .dark .glass {
+    @apply bg-white/10 backdrop-blur-xl shadow-xl;
+    border: 1px solid rgba(178, 165, 255, 0.25);
+  }
+
+  .dark .glass-light {
+    @apply bg-white/15 backdrop-blur-lg;
+    border: 1px solid rgba(178, 165, 255, 0.3);
+  }
+
+  .dark .glass-card {
+    @apply backdrop-blur-xl rounded-2xl shadow-xl;
+    background-color: rgba(75, 0, 130, 0.15);
+    border: 1px solid rgba(178, 165, 255, 0.25);
+  }
+
+  .dark .glass-button {
+    @apply backdrop-blur-lg rounded-xl px-4 py-2 transition-all duration-200
+           hover:scale-[1.02] active:scale-[0.98];
+    font-family: 'Zain', sans-serif;
+    background-color: rgba(75, 0, 130, 0.3);
+    border: 1px solid rgba(178, 165, 255, 0.35);
+    color: #F0EEE9;
+  }
+
+  .dark .glass-button:hover {
+    background-color: rgba(75, 0, 130, 0.5);
+  }
+
+  .dark .glass-input {
+    @apply backdrop-blur-lg rounded-xl px-4 py-3 outline-none transition-all duration-200;
+    background-color: rgba(75, 0, 130, 0.15);
+    border: 1px solid rgba(178, 165, 255, 0.3);
+    color: #F0EEE9;
+  }
+
+  .dark .glass-input::placeholder {
+    color: rgba(178, 165, 255, 0.6);
+  }
+
+  .dark .glass-input:focus {
+    background-color: rgba(75, 0, 130, 0.25);
+    border-color: rgba(255, 155, 0, 0.6);
+  }
+
+  .dark .sidebar-bg {
+    background: linear-gradient(180deg, rgba(75, 0, 130, 0.3) 0%, rgba(13, 14, 14, 0.95) 100%);
+    border-right: 1px solid rgba(178, 165, 255, 0.2);
+  }
+
+  .dark .main-bg {
+    background: linear-gradient(135deg, #0D0E0E 0%, #1a0a2e 50%, #0D0E0E 100%);
+  }
+
+  /* ============================================
+     LIGHT MODE COMPONENTS
+     ============================================ */
+  .light .glass {
+    @apply backdrop-blur-xl shadow-lg;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(75, 0, 130, 0.15);
+  }
+
+  .light .glass-light {
+    @apply backdrop-blur-lg;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(75, 0, 130, 0.1);
+  }
+
+  .light .glass-card {
+    @apply backdrop-blur-xl rounded-2xl shadow-lg;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(75, 0, 130, 0.12);
+  }
+
+  .light .glass-button {
+    @apply backdrop-blur-lg rounded-xl px-4 py-2 transition-all duration-200
+           hover:scale-[1.02] active:scale-[0.98];
+    font-family: 'Zain', sans-serif;
+    background-color: rgba(75, 0, 130, 0.1);
+    border: 1px solid rgba(75, 0, 130, 0.2);
+    color: #4B0082;
+  }
+
+  .light .glass-button:hover {
+    background-color: rgba(75, 0, 130, 0.2);
+  }
+
+  .light .glass-input {
+    @apply backdrop-blur-lg rounded-xl px-4 py-3 outline-none transition-all duration-200;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(75, 0, 130, 0.2);
+    color: #0D0E0E;
+  }
+
+  .light .glass-input::placeholder {
+    color: rgba(75, 0, 130, 0.5);
+  }
+
+  .light .glass-input:focus {
+    background-color: #ffffff;
+    border-color: #FF9B00;
+    box-shadow: 0 0 0 3px rgba(255, 155, 0, 0.15);
+  }
+
+  .light .sidebar-bg {
+    background: linear-gradient(180deg, rgba(75, 0, 130, 0.08) 0%, rgba(240, 238, 233, 0.98) 100%);
+    border-right: 1px solid rgba(75, 0, 130, 0.15);
+  }
+
+  .light .main-bg {
+    background: linear-gradient(135deg, #F0EEE9 0%, #E5E2DB 50%, #F0EEE9 100%);
+  }
+
+  /* ============================================
+     SHARED COMPONENTS (both modes)
+     ============================================ */
+  .text-shadow {
+    text-shadow: 0 2px 20px rgba(75, 0, 130, 0.5);
+  }
+
+  .dark .note-type-note {
+    border-left: 4px solid rgba(178, 165, 255, 0.7);
+  }
+
+  .dark .note-type-thought {
+    border-left: 4px solid rgba(75, 0, 130, 0.9);
+  }
+
+  .dark .note-type-idea {
+    border-left: 4px solid rgba(255, 155, 0, 0.7);
+  }
+
+  .light .note-type-note {
+    border-left: 4px solid #B2A5FF;
+  }
+
+  .light .note-type-thought {
+    border-left: 4px solid #4B0082;
+  }
+
+  .light .note-type-idea {
+    border-left: 4px solid #FF9B00;
+  }
+
+  .dark .iridia-glow {
+    box-shadow: 0 0 30px rgba(75, 0, 130, 0.5), 0 0 60px rgba(178, 165, 255, 0.25);
+  }
+
+  .light .iridia-glow {
+    box-shadow: 0 4px 20px rgba(75, 0, 130, 0.15), 0 8px 40px rgba(75, 0, 130, 0.1);
+  }
+
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl transition-all duration-300;
+    font-family: 'Zain', sans-serif;
+    font-weight: 600;
+    background: linear-gradient(135deg, #4B0082 0%, #6B21A8 100%);
+    color: #F0EEE9;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #6B21A8 0%, #7C3AED 100%);
+    box-shadow: 0 10px 25px -5px rgba(75, 0, 130, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-accent {
+    @apply px-6 py-3 rounded-xl transition-all duration-300;
+    font-family: 'Zain', sans-serif;
+    font-weight: 600;
+    background-color: #FF9B00;
+    color: #0D0E0E;
+  }
+
+  .btn-accent:hover {
+    background-color: #FFAB2E;
+    box-shadow: 0 10px 25px -5px rgba(255, 155, 0, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Active nav item styles */
+  .dark .nav-item-active {
+    background-color: rgba(75, 0, 130, 0.4);
+    border: 1px solid rgba(178, 165, 255, 0.3);
+  }
+
+  .light .nav-item-active {
+    background-color: rgba(75, 0, 130, 0.15);
+    border: 1px solid rgba(75, 0, 130, 0.2);
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .font-display {
+    font-family: 'Zain', sans-serif;
+  }
+
+  .font-body {
+    font-family: 'Merriweather', serif;
+  }
+
+  /* Text colors with better contrast */
+  .dark .text-primary {
+    color: #F0EEE9;
+  }
+
+  .light .text-primary {
+    color: #0D0E0E;
+  }
+
+  .dark .text-secondary {
+    color: rgba(178, 165, 255, 0.85);
+  }
+
+  .light .text-secondary {
+    color: rgba(75, 0, 130, 0.7);
+  }
+
+  .dark .text-muted {
+    color: rgba(178, 165, 255, 0.6);
+  }
+
+  .light .text-muted {
+    color: rgba(75, 0, 130, 0.5);
+  }
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
