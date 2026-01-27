@@ -80,44 +80,52 @@ export function CategoryManager({
         </DialogHeader>
 
         <div className="p-4 space-y-4">
-          {/* New category form */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Nueva categoria"
-              className="flex-1 glass-input py-2"
-              onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-            />
-            <div className="flex gap-1 flex-shrink-0">
-              {CATEGORY_COLORS.slice(0, 5).map((color) => (
-                <button
-                  key={color}
-                  onClick={() => setNewColor(color)}
-                  className={cn(
-                    'w-8 h-8 rounded-lg transition-transform',
-                    newColor === color && 'scale-110 ring-2 ring-iridia-orange/60'
-                  )}
-                  style={{ backgroundColor: color }}
-                />
-              ))}
+          {/* New category form - stacked layout */}
+          <div className="space-y-3">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Nueva categoria"
+                className="flex-1 glass-input py-2"
+                onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+              />
             </div>
-            {/* FIX BUG: Added flex-shrink-0 to prevent button from collapsing */}
-            <button
-              onClick={handleCreate}
-              disabled={!newName.trim()}
-              className={cn(
-                'p-2 rounded-lg transition-colors flex-shrink-0',
-                newName.trim()
-                  ? 'bg-iridia-orange hover:bg-iridia-orange/90 text-iridia-black'
-                  : isDark
-                    ? 'text-iridia-lavender/30 cursor-not-allowed'
-                    : 'text-iridia-indigo/30 cursor-not-allowed'
-              )}
-            >
-              <Plus className="w-5 h-5" />
-            </button>
+            <div className="flex items-center justify-between">
+              <div className="flex gap-1.5">
+                {CATEGORY_COLORS.slice(0, 5).map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setNewColor(color)}
+                    className={cn(
+                      'w-7 h-7 rounded-full transition-all duration-200',
+                      newColor === color
+                        ? 'scale-110 ring-2 ring-offset-2 ring-iridia-orange/60'
+                        : 'hover:scale-105',
+                      isDark ? 'ring-offset-iridia-black' : 'ring-offset-white'
+                    )}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+              <Button
+                onClick={handleCreate}
+                disabled={!newName.trim()}
+                size="sm"
+                className={cn(
+                  'gap-1.5 font-display',
+                  newName.trim()
+                    ? 'bg-iridia-orange hover:bg-iridia-orange/90 text-iridia-black'
+                    : isDark
+                      ? 'bg-iridia-indigo/20 text-iridia-lavender/30 cursor-not-allowed'
+                      : 'bg-iridia-indigo/5 text-iridia-indigo/30 cursor-not-allowed'
+                )}
+              >
+                <Plus className="w-4 h-4" />
+                Crear
+              </Button>
+            </div>
           </div>
 
           {/* Categories list with ScrollArea */}

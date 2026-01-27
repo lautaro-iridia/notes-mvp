@@ -115,7 +115,7 @@ export function useNotes(options: UseNotesOptions = {}) {
     },
   })
 
-  const createNote = useCallback((noteData: Partial<Omit<Note, 'id' | 'createdAt' | 'updatedAt'>>) => {
+  const createNote = useCallback(async (noteData: Partial<Omit<Note, 'id' | 'createdAt' | 'updatedAt'>>) => {
     const data: NoteCreate = {
       title: noteData.title || 'Sin título',
       content: noteData.content,
@@ -124,10 +124,19 @@ export function useNotes(options: UseNotesOptions = {}) {
       color: noteData.color,
       category_ids: noteData.categoryIds || [],
     }
-    return createMutation.mutateAsync(data)
-  }, [createMutation])
+    const created = await createMutation.mutateAsync(data)
+    // Link notes after creation
+    const linkedIds = noteData.linkedNoteIds || []
+    for (const targetId of linkedIds) {
+      await notesApi.linkNotes(created.id, targetId)
+    }
+    if (linkedIds.length > 0) {
+      queryClient.invalidateQueries({ queryKey: ['notes'] })
+    }
+    return created
+  }, [createMutation, queryClient])
 
-  const updateNote = useCallback((id: string, updates: Partial<Omit<Note, 'id' | 'createdAt'>>) => {
+  const updateNote = useCallback(async (id: string, updates: Partial<Omit<Note, 'id' | 'createdAt'>>) => {
     const data: NoteUpdate = {}
     if (updates.title !== undefined) data.title = updates.title
     if (updates.content !== undefined) data.content = updates.content
@@ -135,8 +144,26 @@ export function useNotes(options: UseNotesOptions = {}) {
     if (updates.isPinned !== undefined) data.is_pinned = updates.isPinned
     if (updates.color !== undefined) data.color = updates.color
     if (updates.categoryIds !== undefined) data.category_ids = updates.categoryIds
-    return updateMutation.mutateAsync({ id, data })
-  }, [updateMutation])
+    const result = await updateMutation.mutateAsync({ id, data })
+    // Handle linked notes changes
+    if (updates.linkedNoteIds !== undefined) {
+      const currentNote = allNotes.find(n => n.id === id)
+      const oldLinks = currentNote?.linkedNoteIds || []
+      const newLinks = updates.linkedNoteIds
+      const toLink = newLinks.filter(nid => !oldLinks.includes(nid))
+      const toUnlink = oldLinks.filter(nid => !newLinks.includes(nid))
+      for (const targetId of toLink) {
+        await notesApi.linkNotes(id, targetId)
+      }
+      for (const targetId of toUnlink) {
+        await notesApi.unlinkNotes(id, targetId)
+      }
+      if (toLink.length > 0 || toUnlink.length > 0) {
+        queryClient.invalidateQueries({ queryKey: ['notes'] })
+      }
+    }
+    return result
+  }, [updateMutation, allNotes, queryClient])
 
   const deleteNote = useCallback((id: string) => {
     return deleteMutation.mutateAsync(id)
