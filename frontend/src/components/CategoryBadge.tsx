@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import type { Category } from '../types'
-import { cn } from '../utils/helpers'
+import { cn } from '@/lib/utils'
+import { badgeVariants } from '@/components/ui/badge'
 
 interface CategoryBadgeProps {
   category: Category
@@ -18,8 +19,8 @@ export function CategoryBadge({
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full font-medium',
-        'border transition-all duration-200',
+        badgeVariants({ variant: 'outline' }),
+        'rounded-full font-medium transition-all duration-200',
         onClick && 'cursor-pointer hover:scale-105',
         size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-sm'
       )}

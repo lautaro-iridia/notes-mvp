@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import { notesApi, Note as ApiNote, NoteCreate, NoteUpdate } from '@/api'
 import type { Note, NoteType } from '../types'
 
@@ -57,6 +58,10 @@ export function useNotes(options: UseNotesOptions = {}) {
     mutationFn: (data: NoteCreate) => notesApi.create(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      toast.success('Nota creada')
+    },
+    onError: () => {
+      toast.error('Error al crear la nota')
     },
   })
 
@@ -65,6 +70,10 @@ export function useNotes(options: UseNotesOptions = {}) {
     mutationFn: ({ id, data }: { id: string; data: NoteUpdate }) => notesApi.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      toast.success('Nota actualizada')
+    },
+    onError: () => {
+      toast.error('Error al actualizar la nota')
     },
   })
 
@@ -73,6 +82,10 @@ export function useNotes(options: UseNotesOptions = {}) {
     mutationFn: (id: string) => notesApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] })
+      toast.success('Nota eliminada')
+    },
+    onError: () => {
+      toast.error('Error al eliminar la nota')
     },
   })
 
