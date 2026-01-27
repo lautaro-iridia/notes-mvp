@@ -108,6 +108,5 @@ export function getNotesStats(notes: Note[]): { total: number; notes: number; th
   }
 }
 
-export function cn(...classes: (string | undefined | null | false)[]): string {
-  return classes.filter(Boolean).join(' ')
-}
+// Re-export cn from shadcn utils (uses clsx + tailwind-merge for better class merging)
+export { cn } from '../lib/utils'

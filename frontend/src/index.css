@@ -76,6 +76,64 @@
   .light ::-webkit-scrollbar-thumb:hover {
     background: rgba(75, 0, 130, 0.5);
   }
+  /* ============================================
+     IRIDIA LABS - CSS VARIABLES FOR SHADCN
+     ============================================ */
+  :root {
+    /* Light mode (iridia-cream background) */
+    --background: 43 21% 94%;           /* #F0EEE9 iridia-cream */
+    --foreground: 180 4% 5%;            /* #0D0E0E iridia-black */
+    --card: 0 0% 100%;
+    --card-foreground: 180 4% 5%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 4% 5%;
+    --primary: 275 100% 25%;            /* #4B0082 iridia-indigo */
+    --primary-foreground: 43 21% 94%;
+    --secondary: 252 100% 83%;          /* #B2A5FF iridia-lavender */
+    --secondary-foreground: 275 100% 25%;
+    --muted: 275 20% 90%;
+    --muted-foreground: 275 30% 40%;
+    --accent: 37 100% 50%;              /* #FF9B00 iridia-orange */
+    --accent-foreground: 180 4% 5%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 275 30% 80%;
+    --input: 275 30% 80%;
+    --ring: 37 100% 50%;                /* iridia-orange for focus */
+    --chart-1: 275 100% 25%;
+    --chart-2: 252 100% 83%;
+    --chart-3: 37 100% 50%;
+    --chart-4: 275 50% 40%;
+    --chart-5: 37 80% 60%;
+    --radius: 0.75rem;                  /* 12px consistent with glass-card */
+  }
+  .dark {
+    /* Dark mode (iridia-black background) */
+    --background: 180 4% 5%;            /* #0D0E0E iridia-black */
+    --foreground: 43 21% 94%;           /* #F0EEE9 iridia-cream */
+    --card: 275 100% 10%;
+    --card-foreground: 43 21% 94%;
+    --popover: 275 100% 10%;
+    --popover-foreground: 43 21% 94%;
+    --primary: 252 100% 83%;            /* #B2A5FF iridia-lavender (inverted for dark) */
+    --primary-foreground: 180 4% 5%;
+    --secondary: 275 100% 25%;          /* #4B0082 iridia-indigo */
+    --secondary-foreground: 43 21% 94%;
+    --muted: 275 50% 15%;
+    --muted-foreground: 252 60% 70%;
+    --accent: 37 100% 50%;              /* #FF9B00 iridia-orange */
+    --accent-foreground: 180 4% 5%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 252 50% 25%;
+    --input: 252 50% 25%;
+    --ring: 37 100% 50%;                /* iridia-orange for focus */
+    --chart-1: 252 100% 83%;
+    --chart-2: 275 100% 25%;
+    --chart-3: 37 100% 50%;
+    --chart-4: 252 60% 70%;
+    --chart-5: 37 80% 60%;
+  }
 }
 
 @layer components {
@@ -342,5 +400,16 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
