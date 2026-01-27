@@ -45,7 +45,7 @@ def note_to_read(note: Note) -> NoteRead:
     )
 
 
-@router.get("/", response_model=list[NoteRead])
+@router.get("", response_model=list[NoteRead])
 async def list_notes(
     current_user: CurrentUser,
     db: DbSession,
@@ -88,7 +88,7 @@ async def list_notes(
     return [note_to_read(note) for note in notes]
 
 
-@router.post("/", response_model=NoteRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=NoteRead, status_code=status.HTTP_201_CREATED)
 async def create_note(
     note_data: NoteCreate,
     current_user: CurrentUser,

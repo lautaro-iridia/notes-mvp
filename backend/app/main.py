@@ -21,6 +21,7 @@ app = FastAPI(
     version="1.0.0",
     description="API para la aplicación de notas Iridia",
     lifespan=lifespan,
+    redirect_slashes=False,  # Accept both /notes and /notes/
 )
 
 # CORS middleware

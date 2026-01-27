@@ -10,7 +10,7 @@ from app.schemas import CategoryCreate, CategoryRead, CategoryUpdate
 router = APIRouter()
 
 
-@router.get("/", response_model=list[CategoryRead])
+@router.get("", response_model=list[CategoryRead])
 async def list_categories(
     current_user: CurrentUser,
     db: DbSession,
@@ -23,7 +23,7 @@ async def list_categories(
     return list(result.scalars().all())
 
 
-@router.post("/", response_model=CategoryRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=CategoryRead, status_code=status.HTTP_201_CREATED)
 async def create_category(
     category_data: CategoryCreate,
     current_user: CurrentUser,
