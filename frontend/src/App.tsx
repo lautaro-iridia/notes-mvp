@@ -68,7 +68,6 @@ function AuthenticatedApp() {
     updateNote,
     deleteNote,
     togglePin,
-    linkNotes,
     getLinkedNotes,
   } = useNotes({
     searchQuery,
@@ -266,7 +265,7 @@ function AuthenticatedApp() {
 // const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'  // usado por CopilotKit
 
 export default function App() {
-  const { isLoading, isAuthenticated, user } = useAuth()
+  const { isLoading, isAuthenticated } = useAuth()
 
   if (isLoading) {
     return <LoadingScreen />
