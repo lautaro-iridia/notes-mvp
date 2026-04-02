@@ -27,6 +27,18 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: str = "http://localhost:3000"
 
+    # Google OAuth2
+    google_client_id: str = ""
+    google_allowed_domain: str = ""  # vacío = acepta cualquier cuenta Google
+
+    # Iris Agent (LLM)
+    anthropic_api_key: str = ""
+
+    # Observabilidad — Langfuse
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    langfuse_host: str = "https://cloud.langfuse.com"
+
     @property
     def cors_origins_list(self) -> list[str]:
         return [origin.strip() for origin in self.cors_origins.split(",")]

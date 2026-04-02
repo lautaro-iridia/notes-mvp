@@ -1,18 +1,19 @@
-# Stage 1: Build
-FROM node:22-alpine AS builder
+# Stage 1: Install dependencies (shared base)
+FROM node:22-alpine AS deps
 
 WORKDIR /app
 
-# Copy package files
 COPY frontend/package*.json ./
-
-# Install dependencies
 RUN npm ci
 
-# Copy source code
+# Stage 2: Development — source code comes from volume mount at runtime
+FROM deps AS dev
+
+# Stage 3: Production build
+FROM deps AS builder
+
 COPY frontend/ .
 
-# Build for production
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build

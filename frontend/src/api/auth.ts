@@ -55,6 +55,13 @@ export const authApi = {
     return response.data;
   },
 
+  async loginWithGoogle(accessToken: string): Promise<TokenResponse> {
+    const response = await apiClient.post<TokenResponse>('/api/v1/auth/google', { access_token: accessToken });
+    const { access_token, refresh_token } = response.data;
+    setTokens(access_token, refresh_token);
+    return response.data;
+  },
+
   logout(): void {
     clearTokens();
   },

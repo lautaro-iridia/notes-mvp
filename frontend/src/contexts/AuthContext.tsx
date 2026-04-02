@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
+  loginWithGoogle: (accessToken: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -57,6 +58,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await login({ email: data.email, password: data.password });
   };
 
+  const loginWithGoogle = async (accessToken: string) => {
+    await authApi.loginWithGoogle(accessToken);
+    await refreshUser();
+  };
+
   const logout = () => {
     authApi.logout();
     setUser(null);
@@ -70,6 +76,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         isAuthenticated,
         login,
         register,
+        loginWithGoogle,
         logout,
         refreshUser,
       }}

@@ -42,3 +42,23 @@ def decode_token(token: str) -> dict | None:
         return payload
     except JWTError:
         return None
+
+
+async def get_google_userinfo(access_token: str) -> dict | None:
+    """Verifica un Google access token y retorna la info del usuario.
+
+    Llama al endpoint de userinfo de Google. Retorna None si el token
+    es inválido o la request falla.
+    """
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                "https://www.googleapis.com/oauth2/v2/userinfo",
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
+        if resp.status_code == 200:
+            return resp.json()
+    except httpx.RequestError:
+        pass
+    return None

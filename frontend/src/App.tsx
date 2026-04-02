@@ -1,3 +1,6 @@
+// CopilotKit temporalmente deshabilitado — bug dict_repr en copilotkit<=0.1.83
+// Ver: backend/app/agent/runtime.py — _IrisAgent subclass workaround pendiente de validación
+// Para rehabilitar: descomentar imports, hooks useCopilotReadable/useCopilotAction, CopilotSidebar y wrapper <CopilotKit>
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { Layout } from './components/Layout'
 import { Sidebar, SidebarToggle } from './components/Sidebar'
@@ -65,6 +68,7 @@ function AuthenticatedApp() {
     updateNote,
     deleteNote,
     togglePin,
+    linkNotes,
     getLinkedNotes,
   } = useNotes({
     searchQuery,
@@ -253,12 +257,16 @@ function AuthenticatedApp() {
           onCancel={() => setDeleteConfirm(null)}
         />
       )}
+
+      {/* <CopilotSidebar> deshabilitado — rehabilitar cuando se resuelva el bug del agente */}
     </Layout>
   )
 }
 
+// const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'  // usado por CopilotKit
+
 export default function App() {
-  const { isLoading, isAuthenticated } = useAuth()
+  const { isLoading, isAuthenticated, user } = useAuth()
 
   if (isLoading) {
     return <LoadingScreen />
@@ -268,5 +276,7 @@ export default function App() {
     return <AuthPage />
   }
 
+  // CopilotKit deshabilitado — pendiente resolver bug dict_repr en copilotkit<=0.1.83
+  // Para rehabilitar: envolver <AuthenticatedApp /> en <CopilotKit runtimeUrl={...} agent="iris" threadId={user?.id}>
   return <AuthenticatedApp />
 }

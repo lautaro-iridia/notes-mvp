@@ -413,3 +413,33 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ============================================
+   IRIS SIDEBAR — CopilotKit brand overrides
+   ============================================ */
+.copilotKitSidebar {
+  --copilot-kit-primary-color: #4B0082;
+  --copilot-kit-contrast-color: #F0EEE9;
+  --copilot-kit-secondary-contrast-color: #B2A5FF;
+  --copilot-kit-background-color: #0D0E0E;
+  --copilot-kit-separator-color: rgba(178, 165, 255, 0.2);
+  font-family: 'Merriweather', serif;
+}
+
+.copilotKitSidebarHeader {
+  font-family: 'Zain', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(178, 165, 255, 0.2) !important;
+}
+
+.copilotKitInput {
+  font-family: 'Merriweather', serif !important;
+  border-radius: 0.75rem !important;
+}
+
+/* Light mode overrides for sidebar */
+html.light .copilotKitSidebar {
+  --copilot-kit-background-color: #F0EEE9;
+  --copilot-kit-contrast-color: #0D0E0E;
+}
